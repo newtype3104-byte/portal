@@ -343,27 +343,24 @@ function updateCustomerList() {
   status.innerHTML = '<div class="spinner-sm"></div>';
   status.style.color = '';
 
-  fetch(GAS_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'updateCustomerList' })
-  })
-    .then(function() {
-      status.textContent = '\u2713 送信済み';
-      status.style.color = '#4ade80';
-    })
-    .catch(function() {
-      status.textContent = '\u2717 通信エラー';
-      status.style.color = '#f87171';
-    })
-    .finally(function() {
-      btn.disabled = false;
-      setTimeout(function() {
-        status.textContent = '';
-        status.style.color = '';
-      }, 4000);
-    });
+  var old = document.getElementById('gasFrame');
+  if (old) old.remove();
+
+  var iframe = document.createElement('iframe');
+  iframe.id = 'gasFrame';
+  iframe.style.display = 'none';
+  iframe.src = GAS_URL + '?action=updateCustomerList&t=' + Date.now();
+  document.body.appendChild(iframe);
+
+  setTimeout(function() {
+    status.textContent = '\u2713 送信済み';
+    status.style.color = '#4ade80';
+    btn.disabled = false;
+    setTimeout(function() {
+      status.textContent = '';
+      status.style.color = '';
+    }, 4000);
+  }, 5000);
 }
 </script>
 
