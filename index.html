@@ -343,36 +343,8 @@ function updateCustomerList() {
   status.innerHTML = '<div class="spinner-sm"></div>';
   status.style.color = '';
 
-  fetch(GAS_URL + '?action=updateCustomerList', { redirect: 'follow' })
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      try {
-        var data = JSON.parse(text);
-        if (data.success) {
-          status.textContent = '\u2713 完了';
-          status.style.color = '#4ade80';
-        } else {
-          status.textContent = '\u2717 エラー';
-          status.style.color = '#f87171';
-        }
-      } catch(e) {
-        status.textContent = '\u2713 送信済み';
-        status.style.color = '#c9a96e';
-      }
+ fetch(GAS_URL + '?action=updateCustomerList', { mode: 'no-cors', redirect: 'follow' })
+    .then(function() {
+      status.textContent = '\u2713 送信済み';
+      status.style.color = '#4ade80';
     })
-    .catch(function() {
-      status.textContent = '\u2717 通信エラー';
-      status.style.color = '#f87171';
-    })
-    .finally(function() {
-      btn.disabled = false;
-      setTimeout(function() {
-        status.textContent = '';
-        status.style.color = '';
-      }, 4000);
-    });
-}
-</script>
-
-</body>
-</html>
