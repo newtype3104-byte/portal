@@ -132,6 +132,7 @@ body {
 .card--karte .card-icon   { background: rgba(167,139,250,.10); color: #a78bfa; }
 .card--ig .card-icon      { background: rgba(201,169,110,.10); color: var(--gold); }
 .card--form .card-icon    { background: rgba(96,165,250,.10);  color: #60a5fa; }
+.card--hp .card-icon      { background: rgba(45,212,191,.10);  color: #2dd4bf; }
 
 .card-name {
   font-family: 'Outfit', sans-serif;
@@ -243,7 +244,8 @@ body {
 .card:nth-child(2) { animation-delay: .18s; }
 .card:nth-child(3) { animation-delay: .26s; }
 .card:nth-child(4) { animation-delay: .34s; }
-.action-btn        { animation-delay: .42s; }
+.card:nth-child(5) { animation-delay: .42s; }
+.action-btn        { animation-delay: .50s; }
 
 @media (max-width: 340px) {
   .cards { gap: 10px; padding: 1.6rem .8rem .8rem; }
@@ -307,6 +309,18 @@ body {
     </div>
     <div class="card-name">カルテ送信</div>
     <div class="card-desc">写真・カルテ入力フォーム</div>
+  </a>
+
+
+  <a class="card card--hp" href="https://newtype3104-byte.github.io/-HP-/" target="_blank" rel="noopener" style="grid-column: 1 / -1;">
+    <div class="card-icon">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </div>
+    <div class="card-name">公式HP</div>
+    <div class="card-desc">ホームページ（開発版）</div>
   </a>
 
 </main>
