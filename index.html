@@ -363,7 +363,7 @@ function updateCustomerList() {
   var iframe = document.createElement('iframe');
   iframe.id = 'gasFrame';
   iframe.style.display = 'none';
-  iframe.src = GAS_URL + '?action=updateCustomerList&t=' + Date.now();
+  iframe.src = GAS_URL + '?action=updateCustomerList&token=f43240ce356a46964f0553c42bf447afed8de142&t=' + Date.now();
   document.body.appendChild(iframe);
 
   setTimeout(function() {
