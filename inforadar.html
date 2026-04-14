@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoRadar — 公式情報まとめ</title>
+<style>
+  :root {
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #1E293B;
+    --text-dim: #475569;
+    --text-muted: #94A3B8;
+    --primary: #0D9488;
+    --accent: #7C3AED;
+    --high: #DC2626;
+    --medium: #D97706;
+    --low: #059669;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    padding: 20px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .header {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    border-radius: 18px;
+    padding: 28px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(13,148,136,.2);
+  }
+  .header h1 { font-size: 22px; font-weight: 900; margin-bottom: 4px; letter-spacing: .02em; }
+  .header p { font-size: 13px; opacity: .9; }
+  .toolbar {
+    display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .btn {
+    border: none;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff; border: none;
+  }
+  .tabs {
+    display: flex; gap: 6px; margin-bottom: 16px;
+    background: var(--surface); border-radius: 12px; padding: 6px;
+    border: 1px solid var(--border); overflow-x: auto;
+  }
+  .tab {
+    flex: 1; min-width: 100px;
+    border: none; background: transparent;
+    padding: 10px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; color: var(--text-dim);
+    cursor: pointer; white-space: nowrap;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    transition: border-color .2s ease;
+  }
+  .card:hover { border-color: var(--primary); }
+  .card-head { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 11px; font-weight: 800;
+    padding: 3px 9px; border-radius: 99px;
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .badge-high   { background: #FEE2E2; color: var(--high); }
+  .badge-medium { background: #FEF3C7; color: var(--medium); }
+  .badge-low    { background: #D1FAE5; color: var(--low); }
+  .date { font-size: 12px; color: var(--text-muted); }
+  .card-title {
+    font-size: 15px; font-weight: 700; margin: 4px 0 6px;
+    color: var(--text); line-height: 1.45;
+  }
+  .card-summary { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 10px; }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .source { color: var(--text-muted); font-weight: 600; }
+  .link { color: var(--primary); font-weight: 700; text-decoration: none; }
+  .link:hover { text-decoration: underline; }
+  .empty, .loading {
+    text-align: center; padding: 40px 20px;
+    color: var(--text-muted); font-size: 14px;
+    background: var(--surface); border-radius: 14px; border: 1px dashed var(--border);
+  }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .notice {
+    background: #F0FDFA; border: 1px solid #99F6E4;
+    border-radius: 12px; padding: 12px 14px;
+    font-size: 12px; color: var(--text-dim); line-height: 1.6;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>InfoRadar</h1>
+    <p>公式RSSから毎日自動取得した行政・業界情報まとめ</p>
+  </div>
+
+  <div class="notice" id="notice">
+    📡 Google Apps Script から公式RSSを自動取得しています。情報は毎日午前7時頃に更新されます。
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" id="reloadBtn">🔄 データを再取得</button>
+    <button class="btn" id="updateAllBtn">📥 全カテゴリを一括チェック</button>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+  // ============================================
+  // 設定：GAS のウェブアプリ URL をここに貼り付け
+  // ============================================
+  const GAS_API_URL = "";   // 例: "https://script.google.com/macros/s/AKfycbx.../exec"
+  // ============================================
+
+  const CATEGORIES = [
+    { id: "grants",       label: "💰 助成金・補助金" },
+    { id: "beauty",       label: "✂️ 理容美容" },
+    { id: "tax",          label: "🧾 税金" },
+    { id: "guardianship", label: "⚖️ 法改正" },
+  ];
+
+  const CACHE_KEY = "inforadar_cache_v1";
+  const CACHE_TS_KEY = "inforadar_cache_ts_v1";
+
+  let state = {
+    data: null,
+    activeCategory: CATEGORIES[0].id,
+    loading: false,
+  };
+
+  // ---- DOM ----
+  const tabsEl     = document.getElementById("tabs");
+  const contentEl  = document.getElementById("content");
+  const reloadBtn  = document.getElementById("reloadBtn");
+  const updateBtn  = document.getElementById("updateAllBtn");
+
+  function renderTabs() {
+    tabsEl.innerHTML = "";
+    CATEGORIES.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.className = "tab" + (cat.id === state.activeCategory ? " active" : "");
+      btn.textContent = cat.label;
+      btn.onclick = () => { state.activeCategory = cat.id; render(); };
+      tabsEl.appendChild(btn);
+    });
+  }
+
+  function renderContent() {
+    if (state.loading) {
+      contentEl.innerHTML = '<div class="loading"><div class="spinner"></div><div>データを取得中...</div></div>';
+      return;
+    }
+
+    if (!state.data) {
+      contentEl.innerHTML = '<div class="empty">「データを再取得」を押してください。</div>';
+      return;
+    }
+
+    const catData = state.data[state.activeCategory];
+    const items = (catData && catData.items) || [];
+
+    if (items.length === 0) {
+      contentEl.innerHTML = '<div class="empty">このカテゴリの最新情報はまだありません。</div>';
+      return;
+    }
+
+    contentEl.innerHTML = items.map(it => `
+      <div class="card">
+        <div class="card-head">
+          <span class="badge badge-${escapeAttr(it.importance || "low")}">${escapeText(importanceLabel(it.importance))}</span>
+          <span class="date">${escapeText(it.date || "")}</span>
+        </div>
+        <div class="card-title">${escapeText(it.title || "(無題)")}</div>
+        <div class="card-summary">${escapeText(it.summary || "")}</div>
+        <div class="card-footer">
+          <span class="source">${escapeText(it.source || "")}</span>
+          ${it.url ? `<a class="link" href="${escapeAttr(it.url)}" target="_blank" rel="noopener">詳細を見る →</a>` : ""}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function render() { renderTabs(); renderContent(); }
+
+  function importanceLabel(imp) {
+    if (imp === "high")   return "重要";
+    if (imp === "medium") return "注目";
+    return "通常";
+  }
+
+  function escapeText(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function escapeAttr(s) {
+    return escapeText(s).replace(/"/g, "&quot;");
+  }
+
+  // ---- データ取得 ----
+  async function fetchFromGAS() {
+    if (!GAS_API_URL) {
+      alert("GAS_API_URL が未設定です。inforadar.html の GAS_API_URL に GAS のウェブアプリ URL を設定してください。");
+      return null;
+    }
+    const res = await fetch(GAS_API_URL, { redirect: "follow" });
+    if (!res.ok) throw new Error("GAS API error: " + res.status);
+    return await res.json();
+  }
+
+  async function loadData(forceRefresh) {
+    // キャッシュ優先
+    if (!forceRefresh) {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          state.data = JSON.parse(cached);
+          render();
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    state.loading = true;
+    render();
+
+    try {
+      const data = await fetchFromGAS();
+      if (data) {
+        state.data = data;
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+          localStorage.setItem(CACHE_TS_KEY, String(Date.now()));
+        } catch (e) { /* ignore */ }
+      }
+    } catch (err) {
+      console.error("取得エラー:", err);
+      if (!state.data) {
+        contentEl.innerHTML = `<div class="empty">データ取得に失敗しました：${escapeText(err.message)}</div>`;
+      }
+    } finally {
+      state.loading = false;
+      render();
+    }
+  }
+
+  reloadBtn.addEventListener("click", () => loadData(true));
+  updateBtn.addEventListener("click", () => loadData(true));
+
+  // 初期ロード
+  render();
+  loadData(false);
+</script>
+</body>
+</html>
