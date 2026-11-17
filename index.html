@@ -133,6 +133,7 @@ body {
 .card--ig .card-icon      { background: rgba(201,169,110,.10); color: var(--gold); }
 .card--form .card-icon    { background: rgba(96,165,250,.10);  color: #60a5fa; }
 .card--hp .card-icon      { background: rgba(45,212,191,.10);  color: #2dd4bf; }
+.card--todo .card-icon    { background: rgba(251,146,60,.10);  color: #fb923c; }
 
 .card-name {
   font-family: 'Outfit', sans-serif;
@@ -245,6 +246,7 @@ body {
 .card:nth-child(3) { animation-delay: .26s; }
 .card:nth-child(4) { animation-delay: .34s; }
 .card:nth-child(5) { animation-delay: .42s; }
+.card:nth-child(6) { animation-delay: .50s; }
 .action-btn        { animation-delay: .50s; }
 
 @media (max-width: 340px) {
@@ -262,6 +264,19 @@ body {
 </header>
 
 <main class="cards">
+
+  <a class="card card--todo" href="https://claude.ai/artifact/GYsvHh71kzdxnbRBiZRcXi" target="_blank" rel="noopener" style="grid-column: 1 / -1;">
+    <div class="card-icon">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M9 6h11M9 12h11M9 18h11"/>
+        <polyline points="3.5 6 4.5 7 6.5 5"/>
+        <polyline points="3.5 12 4.5 13 6.5 11"/>
+        <polyline points="3.5 18 4.5 19 6.5 17"/>
+      </svg>
+    </div>
+    <div class="card-name">やることリスト</div>
+    <div class="card-desc">期限・進み具合・全体図（Claude）</div>
+  </a>
 
   <a class="card card--reserve" href="https://newtype3104-byte.github.io/reservekit/" target="_blank" rel="noopener">
     <div class="card-icon">
